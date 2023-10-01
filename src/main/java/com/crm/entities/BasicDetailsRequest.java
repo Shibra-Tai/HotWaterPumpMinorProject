@@ -2,14 +2,18 @@ package com.crm.entities;
 
 public class BasicDetailsRequest 
 {
-	private Project project;
+	
 	private Address address;
-	public Project getProject() {
-		return project;
+	
+	public BasicDetailsRequest() {
+
 	}
-	public void setProject(Project project) {
-		this.project = project;
+	
+	public BasicDetailsRequest(Address address) {
+		
+		this.address = address;
 	}
+	
 	public Address getAddress() {
 		return address;
 	}

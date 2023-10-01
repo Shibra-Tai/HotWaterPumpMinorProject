@@ -12,9 +12,9 @@ public class ProjectService
 	@Autowired
 	private ProjectRepository projectRepository;
 	
-	public Project saveProject(Project project)
+	public void save(Project project)
 	{
-		return projectRepository.save(project);
+		projectRepository.save(project);
 	}
 	
 

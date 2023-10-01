@@ -1,9 +1,12 @@
 package com.crm.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,15 +20,14 @@ public class User
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
+	@Column(unique=true) // not working
 	private String userName;
 	private String userEmail;
 	private String userPassword;
 	private String userRole;
 	
-	public User()
-	{
-		
-	}
+	public User() {}
+	
 	public User(int userId, String userName, String userEmail, String userPassword, String userRole) 
 	{
 		

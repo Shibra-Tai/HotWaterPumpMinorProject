@@ -54,7 +54,7 @@ public class SecurityConfig
     	return http.csrf()
     			.disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/login").permitAll()
+                .requestMatchers("/login", "/refreshToken").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

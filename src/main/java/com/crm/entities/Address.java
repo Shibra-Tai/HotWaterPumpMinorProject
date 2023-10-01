@@ -18,17 +18,11 @@ import jakarta.persistence.SecondaryTables;
 import com.crm.entities.Project;
 
 @Entity
-//@SecondaryTables({
-//	@SecondaryTable(name="Project", pkJoinColumns= {
-//			@PrimaryKeyJoinColumn(name="projectId", referencedColumnName="projectId")
-//			}
-//			)
-//})
-//@IdClass(AddressKey.class)
 public class Address 
 {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int addressId;
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="project_id", referencedColumnName= "projectId")
@@ -36,9 +30,9 @@ public class Address
 	private String buildingName;
 	private String unitNumber;
 	private String lotNumber;
-	private String StreetNumber;
-	private String StreetName;
-	private String StreetTypeSuffix;
+	private String streetNumber;
+	private String streetName;
+	private String streetTypeSuffix;
 	private String suburb;
 	private String state;
 	private String postcode;
@@ -75,22 +69,22 @@ public class Address
 		this.lotNumber = lotNumber;
 	}
 	public String getStreetNumber() {
-		return StreetNumber;
+		return streetNumber;
 	}
 	public void setStreetNumber(String streetNumber) {
-		StreetNumber = streetNumber;
+		this.streetNumber =  streetNumber;
 	}
 	public String getStreetName() {
-		return StreetName;
+		return streetName;
 	}
 	public void setStreetName(String streetName) {
-		StreetName = streetName;
+		this.streetName = streetName;
 	}
 	public String getStreetTypeSuffix() {
-		return StreetTypeSuffix;
+		return streetTypeSuffix;
 	}
 	public void setStreetTypeSuffix(String streetTypeSuffix) {
-		StreetTypeSuffix = streetTypeSuffix;
+		this.streetTypeSuffix = streetTypeSuffix;
 	}
 	public String getSuburb() {
 		return suburb;

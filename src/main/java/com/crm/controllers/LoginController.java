@@ -22,15 +22,30 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import com.crm.config.UserDetailsServiceImpl;
+import com.crm.entities.RefreshToken;
+import com.crm.entities.RefreshTokenRequest;
 import com.crm.entities.User;
 import com.crm.helper.JwtTokenHelper;
+import com.crm.repositories.UserRepository;
+import com.crm.services.RefreshTokenService;
 import com.crm.services.UserService;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 
 
 @RestController
 @RequestMapping("/")
 public class LoginController 
 {	
+	
+	RefreshToken refreshToken = null;
+	
+	@Autowired
+	UserService userService;
+	
+	UserDetails userDetails=null;
+	
 	@Autowired
 	private JwtTokenHelper jwtTokenHelper;
 	
@@ -41,42 +56,73 @@ public class LoginController
 	private AuthenticationManager authenticationManager;
 	
 	
+	@Autowired
+	private RefreshTokenService refreshTokenService;
+	
 	@PostMapping("/login")
 	public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthRequest jwtAuthRequest)
 	{
-		System.out.println("In method");
-		System.out.println("in createToken(): username: "+jwtAuthRequest.getUserName());
-		//this.authenticate(jwtAuthRequest.getUserName(), jwtAuthRequest.getUserPassword());
-		//System.out.println("Authenticated");
-		UserDetails userDetails = this.userDetailsServiceImpl.loadUserByUsername(jwtAuthRequest.getUserName());
-		System.out.println(userDetails.getUsername());
-		//System.out.println("error in user details")
+		String userNameFromToken = jwtAuthRequest.getUserName();
+		String userPasswordFromToken = jwtAuthRequest.getUserPassword();
+		
+		
+		if(userNameFromToken == null || userPasswordFromToken == null)
+		{
+			JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(null,null,null);
+			
+			return new ResponseEntity<JwtAuthResponse>(jwtAuthResponse,HttpStatus.OK);
+		}
+		
+		
+		try
+		{
+			boolean isValidUser = authenticate(userNameFromToken,userPasswordFromToken);
+			if(!isValidUser)  // If not a valid user tries to login
+			{
+				JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(null,null,null);
+				return new ResponseEntity<JwtAuthResponse>(jwtAuthResponse,HttpStatus.OK);
+			}
+			
+			
+			
+			// below code will be executed if the user is authenticated
+			
+			refreshToken = refreshTokenService.createRefreshToken(jwtAuthRequest.getUserName());
+			userDetails = this.userDetailsServiceImpl.loadUserByUsername(jwtAuthRequest.getUserName());
+			
+		}
+		catch(UsernameNotFoundException unfe)
+		{
+			System.out.println("USER NOT FOUND IN DATABASE");
+			JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(null,null,null);
+			
+			
+			return new ResponseEntity<JwtAuthResponse>(jwtAuthResponse,HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			System.out.println("--------------LOGIN CONTROLLER: JWT EXPIRED--------------");
+		}
 		String token = this.jwtTokenHelper.generateToken(userDetails);
+		String userRole = userService.getUserRole(jwtAuthRequest.getUserName(), jwtAuthRequest.getUserPassword());
+		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(token,userRole,refreshToken.getUuid());
 		
-		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(token);
-		
-		jwtAuthResponse.setToken(token);
+		System.out.println("TOKEN GENERATED");
 		
 		return new ResponseEntity<JwtAuthResponse>(jwtAuthResponse,HttpStatus.OK);
 	}
 
-	private void authenticate(String userName, String userPassword) 
+	private boolean authenticate(String userName, String userPassword) 
 	{
+		String actualPassword = userService.findPasswordByUserName(userName);
 		
-		
-		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
-				new UsernamePasswordAuthenticationToken(userName, userPassword);
-		try
+		if(actualPassword!="" && actualPassword!=null && actualPassword.equals(userPassword))
 		{
-			this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-		}
-		catch(DisabledException de)
-		{
-			System.out.println("Not able to create token.....Exception occurred");
-			System.out.println("DisabledException occurred: "+de.getMessage());
+			return true;
 		}
 		
 		
+		return false;
 	}
 	
 }

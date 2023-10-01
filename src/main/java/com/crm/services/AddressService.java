@@ -1,5 +1,7 @@
 package com.crm.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +14,28 @@ public class AddressService
 	@Autowired
 	private AddressRepository addressRepository;
 	
-	public Address saveAddress(Address address)
+	public void save(Address address)
 	{
-		return addressRepository.save(address);
+		System.out.println(addressRepository.save(address));
+		
 	}
 	
-
+	// If corresponding Address is not found, null is returned
+	public Address findAddressByProjectId(int projectId)
+	{
+		
+		List<Address> list = addressRepository.findAll();
+		
+		for(Address a : list)
+		{
+			int pid = a.getProject().getProjectId();
+			if(pid == projectId)
+			{
+				return a;
+			}
+		}
+		
+		return null;
+	}
 
 }

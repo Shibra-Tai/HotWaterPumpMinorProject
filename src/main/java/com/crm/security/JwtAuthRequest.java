@@ -6,6 +6,9 @@ public class JwtAuthRequest
 	private String userPassword;
 	
 	
+	public JwtAuthRequest() {
+		
+	}
 	public JwtAuthRequest(String userName, String userPassword) {
 		this.userName = userName;
 		this.userPassword = userPassword;

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +20,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtTokenHelper 
 {
-	public static final long TOKEN_VALIDITY = 5*60*60; 	//specify after how many milisec, token expires
-	
+	public static final long TOKEN_VALIDITY = 100*60; //1minute 	//specify after how many milisec, token expires
+	@Autowired
+	private UserDetailsServiceImpl userDetailsServiceImpl;
 	public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 	//SECRET is for digital signature of token
 	
@@ -36,6 +38,7 @@ public class JwtTokenHelper
 	public Date getExpirationDateFromToken(String token)
 	{
 		return getClaimFromToken(token, Claims::getExpiration);	
+		
 	}
 	
 	
@@ -43,6 +46,7 @@ public class JwtTokenHelper
 	{
 		final Claims claims = getAllClaimsFromToken(token);
 		return claimsResolver.apply(claims);
+		
 	}
 	
 	
@@ -56,6 +60,7 @@ public class JwtTokenHelper
 	private Boolean isTokenExpired(String token)
 	{
 		final Date expirationDate = getExpirationDateFromToken(token);
+		System.out.println("EXP DATE--------->"+expirationDate);
 		return expirationDate.before(new Date());
 		
 	}
@@ -74,18 +79,44 @@ public class JwtTokenHelper
 	private String doGenerateToken(Map<String, Object> claims, String subject)
 	{
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY*100))
+				
+				
+				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
 				.signWith(SignatureAlgorithm.HS256, SECRET).compact();
 		
 	}
 	
 	
 	// Is token valid?
-	public Boolean validateToken(String token, UserDetails userDetails)
+	public boolean validateToken(String token, UserDetails userDetails)
 	{
 		final String username = getUsernameFromToken(token);
 		
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 		
+	}
+	
+	
+	// Not used in this application as Logout Controller is removed
+	public String invalidateToken(String token)
+	{
+		String invalidToken = null;
+		String userName = getUsernameFromToken(token);
+		UserDetails userDetails=userDetailsServiceImpl.loadUserByUsername(userName);;
+		
+
+		Claims claims = getAllClaimsFromToken(token);
+		
+	
+		System.out.println("Invalidating date: "+claims.getExpiration());
+		return   Jwts.builder()
+				.setClaims(claims)
+				.setSubject(userName)
+				.setExpiration(new Date(System.currentTimeMillis() + 0))
+				.setIssuedAt(new Date())
+				.signWith(SignatureAlgorithm.HS256, SECRET)
+				.compact();
+		
+
 	}
 }

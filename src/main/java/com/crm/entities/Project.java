@@ -18,7 +18,7 @@ public class Project
 	private String projectTitle;
 	private String customerFirstName;
 	private String customerLastName;  
-	private long customerphoneNumber;   
+	private long customerPhoneNumber;   
 	private long customerMobileNumber;
 	private String customerType;
 	private String companyName;
@@ -27,8 +27,8 @@ public class Project
 	
 	
 
-	@OneToOne(mappedBy="project")
-	private Address address;  //  because Address class has a foreign key - projectId from this Entity
+//	@OneToOne(mappedBy="project")
+//	private Address address;  //  because Address class has a foreign key - projectId from this Entity
 
 
 
@@ -80,14 +80,14 @@ public class Project
 
 
 
-	public long getCustomerphoneNumber() {
-		return customerphoneNumber;
+	public long getCustomerPhoneNumber() {
+		return customerPhoneNumber;
 	}
 
 
 
-	public void setCustomerphoneNumber(long customerphoneNumber) {
-		this.customerphoneNumber = customerphoneNumber;
+	public void setCustomerPhoneNumber(long customerPhoneNumber) {
+		this.customerPhoneNumber = customerPhoneNumber;
 	}
 
 
@@ -152,15 +152,15 @@ public class Project
 
 
 
-	public Address getAddress() {
-		return address;
-	}
-
-
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+//	public Address getAddress() {
+//		return address;
+//	}
+//
+//
+//
+//	public void setAddress(Address address) {
+//		this.address = address;
+//	}
 
 
 	

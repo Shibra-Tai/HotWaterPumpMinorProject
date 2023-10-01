@@ -1,6 +1,7 @@
 package com.crm.filter;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,74 +32,96 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
 
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
-	
+
 	@Autowired
 	JwtTokenHelper jwtTokenHelper;
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-	throws ServletException, IOException 
+	throws ServletException, IOException
 	{
 		String requestToken = request.getHeader("Authorization");
-		System.out.println("Header: "+request.getHeader("Authorization"));
-		System.out.println("TOKEN IS: "+requestToken);  //Token starts with "Bearer"
+		System.out.println("In Filter -> Authorization: "+requestToken);
+	
+		if(requestToken == null) // Token has not been generated yet
+		{
+			
+			System.out.println("Request does not contain token");
+			
+		}
 		
-		
-		if(request != null && requestToken.startsWith("Bearer"))
+		else if(request != null && requestToken.startsWith("Bearer") && requestToken != null)
 		{
 			token = requestToken.substring(7); // remove "Bearer " from the request token
+			System.out.println("2. Token: "+token);
 			try
 			{
 				userName = this.jwtTokenHelper.getUsernameFromToken(token);
-				System.out.print("Token username: "+userName);
+				System.out.println("Token username-> "+userName);
+				
 			}
 			catch(IllegalArgumentException iae)
 			{
 				System.out.println("IllegalArgumentException occurred: "+iae.getMessage());
+				
 			}
 			catch(ExpiredJwtException eje)
 			{
-				System.out.println("ExpiredJwtException occurred: "+eje.getMessage());
+				// enters here as soon as an expired token is read
+				System.out.println("-----------------In Filter");
+				System.out.println("Expired Jwt Exception occurred: "+eje.getMessage());
+				
 			}
 			catch(MalformedJwtException mje)
 			{
 				System.out.println("MalformedJwtException occurred: "+mje.getMessage());
+				
 			}
 			catch(Exception e)
 			{
 				System.out.println("Exception occurred: "+e.getMessage());
+				
 			}
+			
 		}
 		else
 		{
-			System.out.println("Invalid token in the request");
+			System.out.println("USER LOGGED IN FOR FIRST TIME");
+			// This will happen if token is invalid/null
 		}
 		
 		
 		// Now as we have retrieved token, we will validate it
+		
 		if(userName!=null && SecurityContextHolder.getContext().getAuthentication() == null)
 		{
-			UserDetails userDetails = this.userDetailsServiceImpl.loadUserByUsername(userName);
-			
-			if(this.jwtTokenHelper.validateToken(token, userDetails))
+			try 
 			{
-				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
-						new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
-			
-				usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				UserDetails userDetails = this.userDetailsServiceImpl.loadUserByUsername(userName);
 				
-				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+				if(jwtTokenHelper.validateToken(token, userDetails))
+				{  
+					System.out.println("In controller printing exp::::"+jwtTokenHelper.getExpirationDateFromToken(token));
+					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
+							new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
+				
+					usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					
+					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+				}
+				else
+				{
+					System.out.println("INVALID_TOKEN");
+					// When the token is incorrect, this response will be returned
+				}
 			}
-			else
+			catch(Exception e)
 			{
-				System.out.println("Invalid token!!!");
+				System.out.println("__EXCEPTION: ____"+e.getMessage());
 			}
-		}
-		else
-		{
-			System.out.println("\nSomething went wrong");
 		}
 		
+		System.out.println("Reached here");
 		filterChain.doFilter(request, response);
 	}
 

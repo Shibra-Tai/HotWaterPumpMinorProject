@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = repository.findByuserName(username);
+        Optional<User> user = repository.findByUserName(username);
         return user.map(UserDetailsImpl::new)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found " + username));
     }
