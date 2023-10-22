@@ -2,6 +2,8 @@ package com.crm.controllers;
 import com.crm.services.ScheduleService;
 import com.crm.services.UserService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.entities.Schedule;
 import com.crm.entities.ScheduleJobRequest;
+import com.crm.entities.User;
 
 @RestController
 public class ScheduleJobController 
@@ -20,6 +23,7 @@ public class ScheduleJobController
 	
 	@Autowired
 	ScheduleService scheduleService;
+	
 	
 	
 	@PostMapping("/scheduleJob")
@@ -40,6 +44,13 @@ public class ScheduleJobController
 		
 		return new ResponseEntity<Schedule>(schedule,HttpStatus.OK);
 		
+	}
+	
+	@PostMapping("/getAllInstallers")
+	public ResponseEntity<?> getAllInstallers()
+	{
+		List<User> listOfAllInstallers = userService.findAllInstallers();
 		
+		return new ResponseEntity<List<User>>(listOfAllInstallers,HttpStatus.OK);
 	}
 }

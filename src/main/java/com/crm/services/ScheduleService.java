@@ -1,5 +1,7 @@
 package com.crm.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,23 @@ public class ScheduleService
 		scheduleRepository.save(schedule);
 		
 	}
+	
+	
+	// This method returns null if no Schedule with demanded projectId is present
+	public Schedule getByProjectId(int projectId)
+	{
+		List<Schedule> allSchedules = scheduleRepository.findAll();
+		
+		for(Schedule schedule : allSchedules) {
+			if(schedule.getProjectId() == projectId)
+			{
+				return schedule;
+			}
+		}
+		
+		return null;
+	}
+	
 	
 	
 	

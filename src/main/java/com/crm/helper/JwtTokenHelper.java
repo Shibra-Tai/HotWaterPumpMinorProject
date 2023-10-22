@@ -20,7 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtTokenHelper 
 {
-	public static final long TOKEN_VALIDITY = 100*60; //1minute 	//specify after how many milisec, token expires
+	public static final long TOKEN_VALIDITY = 100*60*100; //1minute 	//specify after how many milisec, token expires
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
 	public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";

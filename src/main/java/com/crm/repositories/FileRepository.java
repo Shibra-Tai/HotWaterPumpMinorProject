@@ -5,11 +5,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.crm.entities.Schedule;
+import com.crm.entities.FileEntity;
 
 
 @Repository
-public interface ScheduleRepository extends JpaRepository<Schedule, Integer>
-{
-	
+public interface FileRepository extends JpaRepository<FileEntity, Integer>{
+	Optional<FileEntity> findByprojectProjectId(int projectId);
+
 }

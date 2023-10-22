@@ -75,7 +75,7 @@ public class UserService
         User user = userRepository.findById(userId).get();
         
         user.setUserEmail(updatedUser.getUserEmail());
-        user.setUserName(updatedUser.getUserEmail());
+        user.setUserName(updatedUser.getUserName());
         user.setUserRole(updatedUser.getUserRole());
         user.setUserPassword(updatedUser.getUserPassword());
         
@@ -109,6 +109,22 @@ public class UserService
 	
 	public String findUserEmailByUserId(int userId)
 	{
+		
 		return userRepository.findById(userId).get().getUserEmail();
+	}
+	
+	public List<User> findAllInstallers()
+	{
+		List<User> listOfAllUsers = userRepository.findAll();
+		List<User> listOfAllInstallers = new ArrayList<>();
+		for(User u: listOfAllUsers)
+		{
+			if(u.getUserRole().toUpperCase().equals("INSTALLER"))
+			{
+				listOfAllInstallers.add(u);
+			}
+		}
+		
+		return listOfAllInstallers;
 	}
 }

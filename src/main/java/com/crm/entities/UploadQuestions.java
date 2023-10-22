@@ -2,38 +2,25 @@ package com.crm.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class Questions {
+public class UploadQuestions {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int questionId;
 	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name="project_id", referencedColumnName= "projectId")
 	private Project project;
-	@Lob
-	private byte[] electricityBill;
-	private String electricityBillExtension;
 	private String signedNominationFormPast;
 	private String buildingType;
 	private String occupyByBusiness;
-	@Lob
-	private byte [] beforeInstallation;
-	private String beforeInstallationExtension;
-	@Lob
-	private byte[] currentHWUnit;
-	private String currentHWUnitExtension;
-	@Lob
-	private byte[] currentHWUnitCompliancePlate;
-	private String currentHWUnitCompliancePlateExtension;
 	private String titleOfCustomer;
 	private String fullNameOfCustomer;
-	@Lob
-	private byte[] outsidePremisesSignage;
-	private String outsidePremisesSignageExtension;
 	private String quotingFor;
 	private String typeOldSystem;
 	private String replaceAirSource;
@@ -42,8 +29,7 @@ public class Questions {
 	private String gasSolarWaterHeaterElectricBoosted;
 	private String gasSolarWaterHeaterGasBoosted;
 	private String paid;
-	
-	
+//
 	public int getQuestionId() {
 		return questionId;
 	}
@@ -56,12 +42,8 @@ public class Questions {
 	public void setProject(Project project) {
 		this.project = project;
 	}
-	public byte[] getElectricityBill() {
-		return electricityBill;
-	}
-	public void setElectricityBill(byte[] electricityBill) {
-		this.electricityBill = electricityBill;
-	}
+//	
+//	
 	public String getSignedNominationFormPast() {
 		return signedNominationFormPast;
 	}
@@ -80,24 +62,12 @@ public class Questions {
 	public void setOccupyByBusiness(String occupyByBusiness) {
 		this.occupyByBusiness = occupyByBusiness;
 	}
-	public byte[] getBeforeInstallation() {
-		return beforeInstallation;
-	}
-	public void setBeforeInstallation(byte[] beforeInstallation) {
-		this.beforeInstallation = beforeInstallation;
-	}
-	public byte[] getCurrentHWUnit() {
-		return currentHWUnit;
-	}
-	public void setCurrentHWUnit(byte[] currentHWUnit) {
-		this.currentHWUnit = currentHWUnit;
-	}
-	public byte[] getCurrentHWUnitCompliancePlate() {
-		return currentHWUnitCompliancePlate;
-	}
-	public void setCurrentHWUnitCompliancePlate(byte[] currentHWUnitCompliancePlate) {
-		this.currentHWUnitCompliancePlate = currentHWUnitCompliancePlate;
-	}
+
+//	
+//	
+//	
+//	
+//	
 	public String getTitleOfCustomer() {
 		return titleOfCustomer;
 	}
@@ -110,12 +80,8 @@ public class Questions {
 	public void setFullNameOfCustomer(String fullNameOfCustomer) {
 		this.fullNameOfCustomer = fullNameOfCustomer;
 	}
-	public byte[] getOutsidePremisesSignage() {
-		return outsidePremisesSignage;
-	}
-	public void setOutsidePremisesSignage(byte[] outsidePremisesSignage) {
-		this.outsidePremisesSignage = outsidePremisesSignage;
-	}
+	
+	
 	public String getQuotingFor() {
 		return quotingFor;
 	}
@@ -164,37 +130,6 @@ public class Questions {
 	public void setPaid(String paid) {
 		this.paid = paid;
 	}
-	public String getElectricityBillExtension() {
-		return electricityBillExtension;
-	}
-	public void setElectricityBillExtension(String electricityBillExtension) {
-		this.electricityBillExtension = electricityBillExtension;
-	}
-	public String getBeforeInstallationExtension() {
-		return beforeInstallationExtension;
-	}
-	public void setBeforeInstallationExtension(String beforeInstallationExtension) {
-		this.beforeInstallationExtension = beforeInstallationExtension;
-	}
-	public String getCurrentHWUnitExtension() {
-		return currentHWUnitExtension;
-	}
-	public void setCurrentHWUnitExtension(String currentHWUnitExtension) {
-		this.currentHWUnitExtension = currentHWUnitExtension;
-	}
-	public String getCurrentHWUnitCompliancePlateExtension() {
-		return currentHWUnitCompliancePlateExtension;
-	}
-	public void setCurrentHWUnitCompliancePlateExtension(String currentHWUnitCompliancePlateExtension) {
-		this.currentHWUnitCompliancePlateExtension = currentHWUnitCompliancePlateExtension;
-	}
-	public String getOutsidePremisesSignageExtension() {
-		return outsidePremisesSignageExtension;
-	}
-	public void setOutsidePremisesSignageExtension(String outsidePremisesSignageExtension) {
-		this.outsidePremisesSignageExtension = outsidePremisesSignageExtension;
-	}
-	
 	
 	
 }
