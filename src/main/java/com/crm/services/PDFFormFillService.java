@@ -53,7 +53,7 @@ public class PDFFormFillService {
 
 	public boolean form17(int projectId) {
 		try (PDDocument document = Loader.loadPDF(new File(
-				"C:\\Users\\Administrator\\Desktop\\CRM\\HotWaterCRM\\HotWaterPumpMinorProject\\src\\main\\java\\com\\crm\\form\\nomination_form.pdf"))) {
+				"\\crm\\src\\main\\java\\com\\crm\\form\\nomination_form.pdf"))) {
 			PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 			Project p = proj.findById(projectId).get();
 			UploadQuestions q = que.findByprojectProjectId(projectId).get();
@@ -97,7 +97,7 @@ public class PDFFormFillService {
 
 	public boolean form16(int projectId) {
 		try (PDDocument document = Loader.loadPDF(new File(
-				"C:\\Users\\Administrator\\Desktop\\CRM\\HotWaterCRM\\HotWaterPumpMinorProject\\src\\main\\java\\com\\crm\\form\\form16.pdf"))) {
+				"\\crm\\src\\main\\java\\com\\crm\\form\\form16.pdf"))) {
 			PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 			Project p = proj.findById(projectId).get();
 			UploadQuestions q = que.findByprojectProjectId(projectId).get();
@@ -143,7 +143,7 @@ public class PDFFormFillService {
 		
 		//Description is remaining 
 		try (PDDocument document = Loader.loadPDF(new File(
-				"C:\\SpringBootProject\\CRM\\crm\\src\\main\\java\\com\\crm\\form\\form16.pdf"))) {
+				"\\crm\\src\\main\\java\\com\\crm\\form\\form16.pdf"))) {
 			PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 			Project p = proj.findById(projectId).get();
 			UploadQuestions q = que.findByprojectProjectId(projectId).get();
@@ -187,7 +187,7 @@ public class PDFFormFillService {
 	}
 	public boolean stcForm(int projectId) {
 		try (PDDocument document = Loader.loadPDF(new File(
-				"C:\\SpringBootProject\\CRM\\crm\\src\\main\\java\\com\\crm\\form\\stcForm.pdf"))) {
+				"\\crm\\src\\main\\java\\com\\crm\\form\\stcForm.pdf"))) {
 			PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 			Project p = proj.findById(projectId).get();
 			Address a=addr.findByprojectProjectId(projectId).get();
