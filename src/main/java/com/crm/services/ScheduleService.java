@@ -19,6 +19,13 @@ public class ScheduleService
 		scheduleRepository.save(schedule);
 		
 	}
+	public List<Schedule>  getAll()
+	{
+		List<Schedule> list=scheduleRepository.findAll();
+		return list;
+		
+	}
+	
 	
 	
 	// This method returns null if no Schedule with demanded projectId is present
