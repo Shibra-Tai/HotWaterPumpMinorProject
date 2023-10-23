@@ -27,6 +27,8 @@ import com.crm.repositories.UploadQuestionsRepository;
 import com.crm.services.QuestionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/")
@@ -42,8 +44,8 @@ public class QuestionsController {
 	UploadQuestionsRepository repo2;
 	
 	
-	@PostMapping(value="/save-question", consumes = {"multipart/form-data" })
-	public ResponseEntity<String> saveQuestions(@RequestParam(name="projectId")String projectId,@RequestParam(name="electricityBill") MultipartFile file1,@RequestParam(name="beforeInstallation",required=false) MultipartFile file2,@RequestParam(name="currentHWUnit",required=false) MultipartFile file3,@RequestParam(name="currentHWUnitCompliancePlate" ,required=false) MultipartFile file4,@RequestParam(name="outsidePremisesSignage" ,required=false) MultipartFile file5,@RequestParam(name="uploadQuestions") String que) {
+	@PostMapping(value="/save-question-document", consumes = {"multipart/form-data" })
+	public ResponseEntity<String> saveQuestions(@RequestParam(name="projectId")String projectId,@RequestParam(name="electricityBill") MultipartFile file1,@RequestParam(name="beforeInstallation",required=false) MultipartFile file2,@RequestParam(name="currentHWUnit",required=false) MultipartFile file3,@RequestParam(name="currentHWUnitCompliancePlate" ,required=false) MultipartFile file4,@RequestParam(name="outsidePremisesSignage" ,required=false) MultipartFile file5) {
 		FileEntity f=new FileEntity();
 		try {
 //			q.setProject(que.getProject());
@@ -68,22 +70,11 @@ public class QuestionsController {
 				f.setOutsidePremisesSignage(file5.getBytes());
 				f.setOutsidePremisesSignageExtension(file5.getContentType());
 			}
-			ObjectMapper mapper=new ObjectMapper();
-			UploadQuestions obj2=mapper.readValue(que, UploadQuestions.class);
 			
 			Project p=new Project();
 			p.setProjectId(Integer.parseInt(projectId));
 			f.setProject(p);
-			System.out.println(obj2);
-
-			repo.save(f);
-			
-			obj2.setProject(p);
-			System.out.print(projectId);
-			if(obj2!=null)
-				repo2.save(obj2);
-			
-			
+			repo.save(f);			
 
 		} catch (IOException e) {
 			
@@ -95,8 +86,19 @@ public class QuestionsController {
 		return  new ResponseEntity<String>("TRUE",HttpStatus.OK);
 
 	}
+	@PostMapping(value="/save-question")
+	public  ResponseEntity<String> questionsOnly(@RequestBody UploadQuestions que){
+		try{
+			repo2.save(que);
+			return  new ResponseEntity<String>("TRUE",HttpStatus.OK);
+		}catch(Exception e){
+			e.printStackTrace();
+			return  new ResponseEntity<String>("DATABASE_ERROR",HttpStatus.OK);
+		}
+		
+	}
 
-	@PostMapping("/questions")
+	@GetMapping("/questions")
 	public ResponseEntity<UploadQuestions> getQuestions(@RequestParam("projectId")int projectId){
 		try {
 		return new ResponseEntity<UploadQuestions>(repo2.findByprojectProjectId(projectId).get(),HttpStatus.OK);
