@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crm.entities.Schedule;
 import com.crm.entities.ScheduleJobRequest;
 import com.crm.entities.User;
+import com.crm.repositories.ProjectRepository;
 
 @RestController
 public class ScheduleJobController 
@@ -23,6 +24,9 @@ public class ScheduleJobController
 	
 	@Autowired
 	ScheduleService scheduleService;
+	
+	@Autowired
+	ProjectRepository projectRepository;
 	
 	
 	
@@ -37,7 +41,7 @@ public class ScheduleJobController
 		schedule.setUserIdOfInstaller(userIdOfInstaller);
 		schedule.setUserIdOfSalesman(userIdOfSalesman);
 		schedule.setScheduleDate(scheduleJobRequest.getScheduleDate());
-		schedule.setProjectId(scheduleJobRequest.getProjectId());
+		schedule.setProject(projectRepository.findById(scheduleJobRequest.getProjectId()).get());
 		
 		scheduleService.save(schedule);
 		

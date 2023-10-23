@@ -27,7 +27,7 @@ public class ScheduleService
 		List<Schedule> allSchedules = scheduleRepository.findAll();
 		
 		for(Schedule schedule : allSchedules) {
-			if(schedule.getProjectId() == projectId)
+			if(schedule.getProject().getProjectId() == projectId)
 			{
 				return schedule;
 			}
