@@ -58,6 +58,13 @@ public class InstallationDocument {
 
 	private byte[] customer_sign;
 	private String customer_sign_extension;
+	@Lob
+	@Column(length = 909715200)
+	private byte[] installer_sign;
+	private String installer_sign_extension;
+
+
+
 	
 	public String getExisting_system_in_situ_extension() {
 		return existing_system_in_situ_extension;
@@ -167,5 +174,18 @@ public class InstallationDocument {
 	public void setCustomer_sign(byte[] customer_sign) {
 		this.customer_sign = customer_sign;
 	}
+	public byte[] getInstaller_sign() {
+		return installer_sign;
+	}
+	public void setInstaller_sign(byte[] installer_sign) {
+		this.installer_sign = installer_sign;
+	}
+	public String getInstaller_sign_extension() {
+		return installer_sign_extension;
+	}
+	public void setInstaller_sign_extension(String installer_sign_extension) {
+		this.installer_sign_extension = installer_sign_extension;
+	}
+
 	
 }

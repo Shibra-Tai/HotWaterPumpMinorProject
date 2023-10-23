@@ -73,51 +73,68 @@ public class InstallationController {
 		
 		
 	}
-	@PostMapping("/download-installation-document/{requiredDocument}")
+	@GetMapping("/download-installation-document/{requiredDocument}")
 	public ResponseEntity<?> getInstallationDocument(@PathVariable("requiredDocument")String requiredDocument,@RequestParam("projectId")int projectId){
+		try{
 		InstallationDocument i=repo.findByprojectProjectId(projectId).get();
+		byte[]ans;
+		String ext;
 		if(requiredDocument.equals("existing_system_in_situ")) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.contentType(MediaType.valueOf(i.getExisting_system_in_situ_extension()))
-				.body(i.getExisting_system_in_situ());
+			ans=i.getExisting_system_in_situ();
+			ext=i.getExisting_system_in_situ_extension();
 		}
 		else if(requiredDocument.equals("existing_system_compliance_plate")) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.contentType(MediaType.valueOf(i.getExisting_system_compliance_plate_extension()))
-				.body(i.getExisting_system_compliance_plate());
+			ans=i.getExisting_system_compliance_plate;
+			ext=i.getNew_installed_system_compliance_plate_extension;
 		}else if(requiredDocument.equals("existing_system_decommissioning")) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.contentType(MediaType.valueOf(i.getExisting_system_decommissioning_extension()))
-				.body(i.getExisting_system_decommissioning());
+			ans=i.getExisting_system_decommissioning();
+			ext=i.getExisting_system_decommissioning_extension()
 		}
 		else if(requiredDocument.equals("new_installed_system_compliance_plate")) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.contentType(MediaType.valueOf(i.getNew_installed_system_compliance_plate_extension()))
-				.body(i.getNew_installed_system_compliance_plate());
+			ans=i.getNew_installed_system_compliance_plate();
+			ext=i.getNew_installed_system_compliance_plate_extension();
 		}
 		else if(requiredDocument.equals("new_installed_system_situ")) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.contentType(MediaType.valueOf(i.getNew_installed_system_situ_extension()))
-				.body(i.getNew_installed_system_situ());
+			ans=i.getNew_installed_system_situ();
+			ext=i.getNew_installed_system_situ_extension();
 		}
 		else if(requiredDocument.equals("oustide_premises")) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.contentType(MediaType.valueOf(i.getOustide_premises_extension()))
-				.body(i.getOustide_premises());
+			ans=i.getOustide_premises();
+			ext=i.getOustide_premises_extension();
 		}
 		else if(requiredDocument.equals("customer_sign")) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.contentType(MediaType.valueOf(i.getCustomer_sign_extension()))
-				.body(i.getCustomer_sign());
+			ans=i.getCustomer_sign();
+			ext=i.getCustomer_sign_extension();
+		}
+		else if(requiredDocument.equals("customer_sign")) {
+			ans=i.getInstaller_sign();
+			ext=i.getInstaller_sign();
 		}
 		else if(requiredDocument.equals("installer_selfie")) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.contentType(MediaType.valueOf(i.getInstaller_selfie_extension()))
-				.body(i.getInstaller_selfie());
+			ans=i.getInstaller_selfie();
+			ext=i.getInstaller_selfie_extension();
 		}
 		else {
 			return new ResponseEntity<String>("not found",HttpStatus.OK);
 
+		}
+		String FilePath="\\crm\\src\\main\\resources\\templates\\";
+		java.io.File file = new java.io.File(FilePath+"temp."+ext.split("/")[1]);
+		  FileUtils.writeByteArrayToFile(file, ans);
+		  InputStreamResource inputStreamResource = new InputStreamResource(new FileInputStream(file));
+		  
+		  HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.add("Content-Disposition",
+					String.format("attachment; filename=\"%s\"", document+"."+ext.split("/")[1]));
+			httpHeaders.add("Cache-Control", "no-cache, no-store, must-revalidate");
+			httpHeaders.add("Pragma", "no-cache");
+			httpHeaders.add("Expires", "0");
+			ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(httpHeaders)
+					.contentLength(ans.length)
+					.contentType(MediaType.parseMediaType(ext)).body(inputStreamResource);
+		return responseEntity;
+		}catch(Exception e){
+			return new ResponseEntity<Boolean>(false,HttpStatus.OK);
 		}
 	}
 

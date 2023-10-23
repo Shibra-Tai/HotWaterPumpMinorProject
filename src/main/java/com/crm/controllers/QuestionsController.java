@@ -108,9 +108,8 @@ public class QuestionsController {
 	
 	@GetMapping("/questions/{document}")
 	public ResponseEntity<?> getDocument(@PathVariable("document")String document,@RequestParam("projectId")int projectId){
-		
 		try {
-		FileEntity f=repo.findByprojectProjectId(projectId).get();
+		File f=repo.findByprojectProjectId(projectId).get();
 		byte[]ans;
 		String ext;
 		if(document.equals("electricitybill")) {
@@ -142,15 +141,24 @@ public class QuestionsController {
 		}
 		if(ans==null || ext==null) {
 			return new ResponseEntity<Boolean>(false,HttpStatus.OK);
-		}
-		  ByteArrayResource resource = new ByteArrayResource(ans);
-		return ResponseEntity.status(HttpStatus.OK)
-				.contentType(MediaType.valueOf(ext))
-			.body(resource);
+		}			
+		String FilePath="\\crm\\src\\main\\resources\\templates\\";
+		java.io.File file = new java.io.File(FilePath+"temp."+ext.split("/")[1]);
+		  FileUtils.writeByteArrayToFile(file, ans);
+		  InputStreamResource inputStreamResource = new InputStreamResource(new FileInputStream(file));
+		  
+		  HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.add("Content-Disposition",
+					String.format("attachment; filename=\"%s\"", document+"."+ext.split("/")[1]));
+			httpHeaders.add("Cache-Control", "no-cache, no-store, must-revalidate");
+			httpHeaders.add("Pragma", "no-cache");
+			httpHeaders.add("Expires", "0");
+			ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(httpHeaders)
+					.contentLength(ans.length)
+					.contentType(MediaType.parseMediaType(ext)).body(inputStreamResource);
+		return responseEntity;
 		}catch(Exception e) {
-			System.out.println(e);
+			// System.out.println(e);
 			return new ResponseEntity<Boolean>(false,HttpStatus.OK);
 		}
-		
-	}
 }
