@@ -1,10 +1,12 @@
 package com.crm.controllers;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +24,6 @@ import com.crm.entities.Project;
 import com.crm.entities.UploadQuestions;
 import com.crm.repositories.FileRepository;
 import com.crm.repositories.UploadQuestionsRepository;
-import com.crm.services.ImageUtils;
 import com.crm.services.QuestionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -109,7 +109,7 @@ public class QuestionsController {
 	@GetMapping("/questions/{document}")
 	public ResponseEntity<?> getDocument(@PathVariable("document")String document,@RequestParam("projectId")int projectId){
 		try {
-		File f=repo.findByprojectProjectId(projectId).get();
+		FileEntity f=repo.findByprojectProjectId(projectId).get();
 		byte[]ans;
 		String ext;
 		if(document.equals("electricitybill")) {
@@ -160,5 +160,6 @@ public class QuestionsController {
 		}catch(Exception e) {
 			// System.out.println(e);
 			return new ResponseEntity<Boolean>(false,HttpStatus.OK);
-		}
+	
+	}	}
 }

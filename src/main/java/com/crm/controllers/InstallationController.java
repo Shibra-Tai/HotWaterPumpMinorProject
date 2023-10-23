@@ -1,15 +1,20 @@
 package com.crm.controllers;
 
+import java.io.FileInputStream;
+
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -84,11 +89,11 @@ public class InstallationController {
 			ext=i.getExisting_system_in_situ_extension();
 		}
 		else if(requiredDocument.equals("existing_system_compliance_plate")) {
-			ans=i.getExisting_system_compliance_plate;
-			ext=i.getNew_installed_system_compliance_plate_extension;
+			ans=i.getExisting_system_compliance_plate();
+			ext=i.getNew_installed_system_compliance_plate_extension();
 		}else if(requiredDocument.equals("existing_system_decommissioning")) {
 			ans=i.getExisting_system_decommissioning();
-			ext=i.getExisting_system_decommissioning_extension()
+			ext=i.getExisting_system_decommissioning_extension();
 		}
 		else if(requiredDocument.equals("new_installed_system_compliance_plate")) {
 			ans=i.getNew_installed_system_compliance_plate();
@@ -108,7 +113,7 @@ public class InstallationController {
 		}
 		else if(requiredDocument.equals("customer_sign")) {
 			ans=i.getInstaller_sign();
-			ext=i.getInstaller_sign();
+			ext=i.getInstaller_sign_extension();
 		}
 		else if(requiredDocument.equals("installer_selfie")) {
 			ans=i.getInstaller_selfie();
@@ -125,7 +130,7 @@ public class InstallationController {
 		  
 		  HttpHeaders httpHeaders = new HttpHeaders();
 			httpHeaders.add("Content-Disposition",
-					String.format("attachment; filename=\"%s\"", document+"."+ext.split("/")[1]));
+					String.format("attachment; filename=\"%s\"", requiredDocument+"."+ext.split("/")[1]));
 			httpHeaders.add("Cache-Control", "no-cache, no-store, must-revalidate");
 			httpHeaders.add("Pragma", "no-cache");
 			httpHeaders.add("Expires", "0");
