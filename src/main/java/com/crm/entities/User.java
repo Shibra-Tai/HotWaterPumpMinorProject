@@ -25,9 +25,36 @@ public class User
 	private String userEmail;
 	private String userPassword;
 	private String userRole;
+	private String companyName;
 	
+	private String companyAddress;
+	private String phoneNumber;
+	
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getCompanyAddress() {
+		return companyAddress;
+	}
+
+	public void setCompanyAddress(String companyAddress) {
+		this.companyAddress = companyAddress;
+	}
+
 	public User() {}
-	
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
 	public User(int userId, String userName, String userEmail, String userPassword, String userRole) 
 	{
 		

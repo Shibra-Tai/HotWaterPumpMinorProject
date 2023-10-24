@@ -11,5 +11,5 @@ import com.crm.entities.Schedule;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer>
 {
-	
+	Optional<Schedule> findByprojectProjectId(int projectId);
 }

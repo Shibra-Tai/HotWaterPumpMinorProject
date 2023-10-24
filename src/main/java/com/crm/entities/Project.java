@@ -25,13 +25,26 @@ public class Project
 	private long abnNumber;
 	private String gstRegistered;
 	private String emailId;
+	private String systemBrand;
 	
 	
 
 //	@OneToOne(mappedBy="project")
 //	private Address address;  //  because Address class has a foreign key - projectId from this Entity
 
-		public String getEmailId() {
+		public String getSystemBrand() {
+        return systemBrand;
+    }
+
+
+
+    public void setSystemBrand(String systemBrand) {
+        this.systemBrand = systemBrand;
+    }
+
+
+
+        public String getEmailId() {
 			return emailId;
 		}
 

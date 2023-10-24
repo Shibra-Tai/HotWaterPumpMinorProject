@@ -12,14 +12,18 @@ import org.springframework.stereotype.Service;
 import com.crm.entities.Address;
 import com.crm.entities.Project;
 import com.crm.entities.Questions;
+import com.crm.entities.Schedule;
 import com.crm.entities.UploadQuestions;
+import com.crm.entities.User;
 import com.crm.repositories.AddressRepository;
 import com.crm.repositories.FileRepository;
 import com.crm.repositories.InstallationDocumentRepository;
 import com.crm.repositories.ProjectRepository;
 import com.crm.repositories.QuestionsRepository;
+import com.crm.repositories.ScheduleRepository;
 import com.crm.repositories.SignatureRepository;
 import com.crm.repositories.UploadQuestionsRepository;
+import com.crm.repositories.UserRepository;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -47,9 +51,14 @@ public class PDFFormFillService {
 	@Autowired
 	InstallationDocumentRepository inst;
 	
+	@Autowired
+	ScheduleRepository sch;
 	
 	@Autowired
 	FileRepository file;
+
+	@Autowired
+	UserRepository user;
 
 	public boolean form17(int projectId) {
 		try (PDDocument document = Loader.loadPDF(new File(
@@ -192,6 +201,9 @@ public class PDFFormFillService {
 			Project p = proj.findById(projectId).get();
 			Address a=addr.findByprojectProjectId(projectId).get();
 			UploadQuestions q = que.findByprojectProjectId(projectId).get();
+			Schedule s=sch.findByprojectProjectId(projectId).get();
+			User u=user.findById(s.getUserIdOfInstaller()).get();
+
 			acroForm.getField("FirstName").setValue(p.getCustomerFirstName());
 			acroForm.getField("LastName").setValue(p.getCustomerLastName());
 			acroForm.getField("Address").setValue(a.getLotNumber()+""+a.getBuildingName()+""+a.getStreetName()+""+a.getStreetNumber());
@@ -201,17 +213,17 @@ public class PDFFormFillService {
 			acroForm.getField("Mobile").setValue(""+p.getCustomerMobileNumber());
 			acroForm.getField("EmailId").setValue(p.getEmailId());
 //			acroForm.getField("InstallationAddress").setValue(a.get);
-			acroForm.getField("SystemBrand").setValue("");
-			acroForm.getField("TankSerialNumber").setValue("");
-			acroForm.getField("VolumetricCapacity").setValue("");
+			acroForm.getField("SystemBrand").setValue(p.getSystemBrand());
+			acroForm.getField("TankSerialNumber").setValue(q.getTankSerialNumber());
+			acroForm.getField("VolumetricCapacity").setValue(q.getVolumetricCapacity());
 			acroForm.getField("GWS").setValue("");
 			
 			acroForm.getField("BuildingType").setValue(p.getCustomerType());
-			acroForm.getField("InstallationCompany").setValue("");
-			acroForm.getField("CompanyAddress").setValue("");
-			acroForm.getField("InstallerName").setValue("");
-			acroForm.getField("InstallerPhoneNumber").setValue("");
-			acroForm.getField("InstallerEmailId").setValue("");
+			acroForm.getField("InstallationCompany").setValue(u.getCompanyName());
+			acroForm.getField("CompanyAddress").setValue(u.getCompanyAddress());
+			acroForm.getField("InstallerName").setValue(u.getUserName());
+			acroForm.getField("InstallerPhoneNumber").setValue(u.getPhoneNumber());
+			acroForm.getField("InstallerEmailId").setValue(u.getUserEmail());
 			acroForm.getField("OwnerName").setValue(p.getCustomerFirstName()+""+p.getCustomerLastName());
 			acroForm.getField("Date").setValue("" + LocalDate.now());
 			

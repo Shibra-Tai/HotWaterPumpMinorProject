@@ -29,6 +29,21 @@ public class UploadQuestions {
 	private String gasSolarWaterHeaterElectricBoosted;
 	private String gasSolarWaterHeaterGasBoosted;
 	private String paid;
+	private String tankSerialNumber;
+	public String getTankSerialNumber() {
+		return tankSerialNumber;
+	}
+	public void setTankSerialNumber(String tankSerialNumber) {
+		this.tankSerialNumber = tankSerialNumber;
+	}
+	public String getVolumetricCapacity() {
+		return volumetricCapacity;
+	}
+	public void setVolumetricCapacity(String volumetricCapacity) {
+		this.volumetricCapacity = volumetricCapacity;
+	}
+	private String volumetricCapacity;
+
 //
 	public int getQuestionId() {
 		return questionId;
