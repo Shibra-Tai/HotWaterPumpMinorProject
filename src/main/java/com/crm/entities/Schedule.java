@@ -30,9 +30,21 @@ public class Schedule
 	@Temporal(TemporalType.DATE)
 	private Date scheduleDate; 
 	//Format: 'YYYY-MM-DD'
+
+	private String installerName;
 	
 	
-	public Schedule()
+	public String getInstallerName() {
+        return installerName;
+    }
+
+
+    public void setInstallerName(String installerName) {
+        this.installerName = installerName;
+    }
+
+
+    public Schedule()
 	{
 		
 	}

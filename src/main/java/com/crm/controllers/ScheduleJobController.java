@@ -42,7 +42,7 @@ public class ScheduleJobController
 		Project p=new Project();
 		p.setProjectId(scheduleJobRequest.getProjectId());
 		schedule.setProject(p);
-		
+		schedule.setInstallerName(scheduleJobRequest.getUserNameOfInstaller());
 		scheduleService.save(schedule);
 		
 		
