@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crm.entities.Project;
 import com.crm.entities.Schedule;
 import com.crm.entities.ScheduleJobRequest;
 import com.crm.entities.User;
@@ -38,7 +39,9 @@ public class ScheduleJobController
 		schedule.setUserIdOfInstaller(userIdOfInstaller);
 		schedule.setUserIdOfSalesman(userIdOfSalesman);
 		schedule.setScheduleDate(scheduleJobRequest.getScheduleDate());
-		schedule.setProjectId(scheduleJobRequest.getProjectId());
+		Project p=new Project();
+		p.setProjectId(scheduleJobRequest.getProjectId());
+		schedule.setProject(p);
 		
 		scheduleService.save(schedule);
 		

@@ -19,7 +19,9 @@ public class Schedule
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int scheduleId;
 	
-	private int projectId;
+	@OneToOne(cascade = CascadeType.MERGE)
+	@JoinColumn(name="project_id", referencedColumnName= "projectId")
+	private Project project;
 	
 	private int userIdOfInstaller;
 	
@@ -36,10 +38,10 @@ public class Schedule
 	}
 
 
-	public Schedule(int scheduleId, int projectId, int userIdOfInstaller, int userIdOfSalesman, Date scheduleDate) {
+	public Schedule(int scheduleId, Project project, int userIdOfInstaller, int userIdOfSalesman, Date scheduleDate) {
 		super();
 		this.scheduleId = scheduleId;
-		this.projectId = projectId;
+		this.project = project;
 		this.userIdOfInstaller = userIdOfInstaller;
 		this.userIdOfSalesman = userIdOfSalesman;
 		this.scheduleDate = scheduleDate;
@@ -56,13 +58,13 @@ public class Schedule
 	}
 
 
-	public int getProjectId() {
-		return projectId;
+	public Project getProject() {
+		return project;
 	}
 
 
-	public void setProjectId(int projectId) {
-		this.projectId = projectId;
+	public void setProject(Project project) {
+		this.project = project;
 	}
 
 
