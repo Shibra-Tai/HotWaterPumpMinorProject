@@ -1,5 +1,6 @@
 package com.crm.controllers;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -86,18 +87,30 @@ public class QuestionsController {
 		return  new ResponseEntity<String>("TRUE",HttpStatus.OK);
 
 	}
-	@PostMapping(value="/save-question")
-	public  ResponseEntity<String> questionsOnly(@RequestBody UploadQuestions que){
-		try{
-			repo2.save(que);
-			return  new ResponseEntity<String>("TRUE",HttpStatus.OK);
-		}catch(Exception e){
+	@PostMapping(value="/save-question", consumes = {"multipart/form-data" })
+	public ResponseEntity<String> saveQuestions(@RequestParam(name="projectId")String projectId,@RequestParam(name="uploadQuestions",required=false) String que) {
+		try {
+//			q.setProject(que.getProject());
+			ObjectMapper mapper=new ObjectMapper();
+			UploadQuestions obj2=mapper.readValue(que, UploadQuestions.class);
+			Project p=new Project();
+			p.setProjectId(Integer.parseInt(projectId));
+			// System.out.println(obj2);
+			obj2.setProject(p);
+			// System.out.print(projectId);
+			if(obj2!=null)
+			repo2.save(obj2);	
+
+		} catch (IOException e) {
+			
 			e.printStackTrace();
 			return  new ResponseEntity<String>("DATABASE_ERROR",HttpStatus.OK);
 		}
 		
-	}
+		
+		return  new ResponseEntity<String>("TRUE",HttpStatus.OK);
 
+	}
 	@GetMapping("/questions")
 	public ResponseEntity<UploadQuestions> getQuestions(@RequestParam("projectId")int projectId){
 		try {
