@@ -24,6 +24,7 @@ import com.crm.entities.FileEntity;
 import com.crm.entities.Project;
 import com.crm.entities.UploadQuestions;
 import com.crm.repositories.FileRepository;
+import com.crm.repositories.ProjectRepository;
 import com.crm.repositories.UploadQuestionsRepository;
 import com.crm.services.QuestionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,6 +41,9 @@ public class QuestionsController {
 	
 	@Autowired
 	FileRepository repo;
+
+	@Autowired
+	ProjectRepository proj;
 	
 	@Autowired
 	UploadQuestionsRepository repo2;
@@ -89,12 +93,12 @@ public class QuestionsController {
 	}
 	@PostMapping(value="/save-question", consumes = {"multipart/form-data" })
 	public ResponseEntity<String> saveQuestions(@RequestParam(name="projectId")String projectId,@RequestParam(name="uploadQuestions",required=false) String que) {
+		
 		try {
 //			q.setProject(que.getProject());
 			ObjectMapper mapper=new ObjectMapper();
 			UploadQuestions obj2=mapper.readValue(que, UploadQuestions.class);
-			Project p=new Project();
-			p.setProjectId(Integer.parseInt(projectId));
+			Project p=proj.findById(Integer.parseInt(projectId)).get();
 			// System.out.println(obj2);
 			obj2.setProject(p);
 			// System.out.print(projectId);
