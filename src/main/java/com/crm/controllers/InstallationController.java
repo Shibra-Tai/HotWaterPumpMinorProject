@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +35,53 @@ public class InstallationController {
 	@PostMapping(value="/upload-installation-document", consumes = {"multipart/form-data" })
 	public ResponseEntity<String> uploadInstallation(@RequestParam("exisitingsystemsitu")MultipartFile file1,@RequestParam(name="exisitingsystemcomplianceplate",required=false)MultipartFile file2,@RequestParam(name="exisitingsystemdecommisioning",required=false )MultipartFile file3,@RequestParam(name="newsystem" ,required=false)MultipartFile file4,@RequestParam(name="newsystemsitu",required=false)MultipartFile file5,@RequestParam(name="installerselfie",required=false)MultipartFile file6,@RequestParam(name="outsidepremises",required=false)MultipartFile file7,@RequestParam(name="customerSign",required=false)String file8,@RequestParam (name="installerSign",required=false)String file9,@RequestParam (name="projectId",required=false)String projectId){
 		InstallationDocument entity=new InstallationDocument();
+		try{
+			if(file1!=null) {
+				entity.setExisting_system_in_situ(file1.getBytes());
+				entity.setExisting_system_in_situ_extension(file1.getContentType());
+			}if(file2!=null) {
+				entity.setExisting_system_compliance_plate(file2.getBytes());
+				entity.setExisting_system_compliance_plate_extension(file2.getContentType());;
+			}if(file3!=null) {
+				entity.setExisting_system_decommissioning(file3.getBytes());
+				entity.setExisting_system_decommissioning_extension(file3.getContentType());
+			}if(file4!=null) {
+				entity.setNew_installed_system_compliance_plate(file4.getBytes());
+				entity.setNew_installed_system_compliance_plate_extension(file4.getContentType());
+			}if(file5!=null) {
+				entity.setNew_installed_system_situ(file5.getBytes());
+				entity.setNew_installed_system_situ_extension(file5.getContentType());
+			}if(file6!=null) {
+				entity.setInstaller_selfie(file6.getBytes());
+				entity.setInstaller_selfie_extension(file6.getContentType());
+			}if(file7!=null) {
+				entity.setOustide_premises(file7.getBytes());
+				entity.setOustide_premises_extension(file7.getContentType());
+			}if(file8!=null) {
+				entity.setCustomer_sign(java.util.Base64.getDecoder().decode(file8));
+				entity.setCustomer_sign_extension("image/png");
+			}
+			if(file9!=null) {
+				entity.setCustomer_sign(java.util.Base64.getDecoder().decode(file9));
+				entity.setCustomer_sign_extension("image/png");
+			}
+			Project p=new Project();
+			p.setProjectId(Integer.parseInt(projectId));
+			entity.setProject(p);
+			repo.save(entity);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("false",HttpStatus.OK);
+			
+		}
+		
+		return new ResponseEntity<String>("true",HttpStatus.OK);
+		
+		
+	}
+	@PutMapping(value="/upload-installation-document", consumes = {"multipart/form-data" })
+	public ResponseEntity<String> updateUploadInstallation(@RequestParam("exisitingsystemsitu")MultipartFile file1,@RequestParam(name="exisitingsystemcomplianceplate",required=false)MultipartFile file2,@RequestParam(name="exisitingsystemdecommisioning",required=false )MultipartFile file3,@RequestParam(name="newsystem" ,required=false)MultipartFile file4,@RequestParam(name="newsystemsitu",required=false)MultipartFile file5,@RequestParam(name="installerselfie",required=false)MultipartFile file6,@RequestParam(name="outsidepremises",required=false)MultipartFile file7,@RequestParam(name="customerSign",required=false)String file8,@RequestParam (name="installerSign",required=false)String file9,@RequestParam (name="projectId",required=false)String projectId){
+		InstallationDocument entity=repo.findByprojectProjectId(0).get();
 		try{
 			if(file1!=null) {
 				entity.setExisting_system_in_situ(file1.getBytes());

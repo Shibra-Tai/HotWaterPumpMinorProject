@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +53,48 @@ public class QuestionsController {
 	@PostMapping(value="/save-question-document", consumes = {"multipart/form-data" })
 	public ResponseEntity<String> saveQuestions(@RequestParam(name="projectId")String projectId,@RequestParam(name="electricityBill") MultipartFile file1,@RequestParam(name="beforeInstallation",required=false) MultipartFile file2,@RequestParam(name="currentHWUnit",required=false) MultipartFile file3,@RequestParam(name="currentHWUnitCompliancePlate" ,required=false) MultipartFile file4,@RequestParam(name="outsidePremisesSignage" ,required=false) MultipartFile file5) {
 		FileEntity f=new FileEntity();
+		try {
+//			q.setProject(que.getProject());
+			if(file1!=null) {
+				System.out.println(file1.getBytes().length);
+
+				f.setElectricityBill(file1.getBytes());
+				System.out.println(f.getElectricityBill().length);
+				f.setElectricityBillExtension(file1.getContentType());
+			}
+			if(file2!=null) {
+				f.setBeforeInstallation(file2.getBytes());
+				f.setBeforeInstallationExtension(file2.getContentType());
+			}
+			if(file3!=null) {
+				f.setCurrentHWUnit(file3.getBytes());
+				f.setCurrentHWUnitExtension(file3.getContentType());
+			}if(file4!=null) {
+				f.setCurrentHWUnitCompliancePlate(file4.getBytes());
+				f.setCurrentHWUnitCompliancePlateExtension(file4.getContentType());
+			}if(file5!=null) {
+				f.setOutsidePremisesSignage(file5.getBytes());
+				f.setOutsidePremisesSignageExtension(file5.getContentType());
+			}
+			
+			Project p=new Project();
+			p.setProjectId(Integer.parseInt(projectId));
+			f.setProject(p);
+			repo.save(f);			
+
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+			return  new ResponseEntity<String>("DATABASE_ERROR",HttpStatus.OK);
+		}
+		
+		
+		return  new ResponseEntity<String>("TRUE",HttpStatus.OK);
+
+	}
+	@PutMapping(value="/save-question-document", consumes = {"multipart/form-data" })
+	public ResponseEntity<String> updateQuestions(@RequestParam(name="projectId")String projectId,@RequestParam(name="electricityBill") MultipartFile file1,@RequestParam(name="beforeInstallation",required=false) MultipartFile file2,@RequestParam(name="currentHWUnit",required=false) MultipartFile file3,@RequestParam(name="currentHWUnitCompliancePlate" ,required=false) MultipartFile file4,@RequestParam(name="outsidePremisesSignage" ,required=false) MultipartFile file5) {
+		FileEntity f=repo.findByprojectProjectId(Integer.parseInt(projectId)).get();
 		try {
 //			q.setProject(que.getProject());
 			if(file1!=null) {

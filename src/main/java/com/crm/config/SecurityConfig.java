@@ -142,7 +142,7 @@ public class SecurityConfig
             "/api/public/authenticate",
             "/actuator/*",
             "/swagger-ui/**",
-            "/login","/refreshToken", "/download"
+            "/login","/refreshToken"
     };
     
     @Bean
