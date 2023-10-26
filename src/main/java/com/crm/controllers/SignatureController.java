@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.crm.entities.Signature;
 import com.crm.repositories.ProjectRepository;
 import com.crm.repositories.SignatureRepository;
+import com.crm.services.PDFFormFillService;
 
 @RestController
 @CrossOrigin
@@ -30,6 +31,9 @@ public class SignatureController {
 	SignatureRepository sign;
 	@Autowired
 	ProjectRepository proj;
+
+	@Autowired
+	PDFFormFillService pdf;
 	
 	@PostMapping("/sign")
 	public boolean uploadSign(@RequestParam(name="siteacessor",required=false)String sign1,@RequestParam(name="siteacessor",required=false)String sign2,@RequestParam("projectId")int projectId)
@@ -40,8 +44,11 @@ public class SignatureController {
 			s.setCustomer(java.util.Base64.getDecoder().decode(sign2));
 			s.setSiteacessor(java.util.Base64.getDecoder().decode(sign1));
 			s.setProject(proj.findById(projectId).get());
-			
 			sign.save(s);
+			pdf.form16(projectId);
+			pdf.form17(projectId);
+			pdf.nominationform(projectId);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
