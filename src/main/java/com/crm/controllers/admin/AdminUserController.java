@@ -41,11 +41,21 @@ public class AdminUserController
     
     
     // Show all users
-    @GetMapping("/all")
-    public List<User> findAllUsers()
+    // @GetMapping("/all")
+    // public List<User> findAllUsers()
+    // {
+    // 	List allUsers = userRepository.findAll();
+    // 	return allUsers;
+    // }
+    @PostMapping("/all")
+    public List<User> findAllUsers(@RequestBody String userName)
     {
-    	List allUsers = userRepository.findAll();
+    	List<User> allUsers = userRepository.findAll();
+    	User user = userService.findByUserName(userName).get();
+    	boolean isCurrentUserRemoved = allUsers.remove(user);
+    	
     	return allUsers;
+    	
     }
     
     @GetMapping("/findByUserId/{userId}")
