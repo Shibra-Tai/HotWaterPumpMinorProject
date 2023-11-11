@@ -19,13 +19,28 @@ public class ScheduleService
 		scheduleRepository.save(schedule);
 		
 	}
-	public List<Schedule>  getAll()
-	{
-		List<Schedule> list=scheduleRepository.findAll();
-		return list;
+	// public List<Schedule>  getAll()
+	// {
+	// 	List<Schedule> list=scheduleRepository.findAll();
+	// 	return list;
 		
+	// }
+	public List<Schedule> getAll()
+	{
+		List<Schedule> listOfSchedules = scheduleRepository.findAll();
+		
+		for(Schedule schedule: listOfSchedules)
+		{
+			Date dateOfSchedule = schedule.getScheduleDate();
+			if(dateOfSchedule.before(new Date()))
+			{
+				listOfSchedules.remove(schedule);
+			}
+		}
+		
+			
+		return listOfSchedules;
 	}
-	
 	
 	
 	// This method returns null if no Schedule with demanded projectId is present
