@@ -18,7 +18,7 @@ public class WriteCSVService
 	@Autowired
 	ProjectRepository projectRepository;
 	
-	File file = null;
+	//File file = null;
 	
 	
 	public boolean returnCSVForGivenProjectId(String fileName, CSVFileContent csvFileContent) 
@@ -26,7 +26,7 @@ public class WriteCSVService
 			
         try 
         {
-        	file = new File(fileName);
+        	File file = new File(fileName);
         	FileWriter fileWriter = new FileWriter(file);
         	CSVWriter csvWriter = new CSVWriter(fileWriter);
         	
@@ -84,7 +84,7 @@ public class WriteCSVService
 		
 		try
 		{
-			file = new File(fileName);
+			File file = new File(fileName);
         	FileWriter fileWriter = new FileWriter(file);
         	CSVWriter csvWriter = new CSVWriter(fileWriter);
         	
