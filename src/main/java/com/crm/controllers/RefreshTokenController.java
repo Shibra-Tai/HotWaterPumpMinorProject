@@ -1,5 +1,12 @@
 package com.crm.controllers;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +24,8 @@ import com.crm.helper.JwtTokenHelper;
 import com.crm.security.JwtAuthResponse;
 import com.crm.services.RefreshTokenService;
 import com.crm.services.UserService;
+
+import io.jsonwebtoken.security.InvalidKeyException;
 
 
 @RestController
@@ -44,7 +53,7 @@ RefreshToken refreshToken = null;
 	
 	// This api is bypassed, like login (means JWT authetication filter is not applied to this)
 		@PostMapping("/refreshToken")
-		public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest)
+		public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) throws InvalidKeyException, java.security.InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException
 		{
 			
 			RefreshToken refreshToken = refreshTokenService.findByUuid(refreshTokenRequest.getUuid()).get();
