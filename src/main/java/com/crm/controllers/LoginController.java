@@ -4,7 +4,13 @@ import com.crm.security.JwtAuthResponse;
 import com.crm.security.JwtAuthRequest;
 import org.springframework.security.core.Authentication;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +38,7 @@ import com.crm.services.UserService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.InvalidKeyException;
 
 
 @RestController
@@ -60,7 +67,7 @@ public class LoginController
 	private RefreshTokenService refreshTokenService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthRequest jwtAuthRequest)
+	public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthRequest jwtAuthRequest) throws InvalidKeyException, java.security.InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException
 	{
 		String userNameFromToken = jwtAuthRequest.getUserName();
 		String userPasswordFromToken = jwtAuthRequest.getUserPassword();
@@ -101,7 +108,7 @@ public class LoginController
 		}
 		catch(Exception e)
 		{
-			System.out.println("--------------LOGIN CONTROLLER: JWT EXPIRED--------------");
+			System.out.println("LOGIN CONTROLLER: EXCEPTION CAUGHT");
 		}
 		String token = this.jwtTokenHelper.generateToken(userDetails);
 		String userRole = userService.getUserRole(jwtAuthRequest.getUserName(), jwtAuthRequest.getUserPassword());
