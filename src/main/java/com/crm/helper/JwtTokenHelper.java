@@ -1,9 +1,17 @@
 package com.crm.helper;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,15 +19,18 @@ import org.springframework.stereotype.Component;
 
 import com.crm.config.UserDetailsImpl;
 import com.crm.config.UserDetailsServiceImpl;
+import com.crm.services.AESUtil;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.InvalidKeyException;
 
 //All the operations related to token will be done here
 @Component
 public class JwtTokenHelper 
 {
+	
 	public static final long TOKEN_VALIDITY = 100*60*100; //1minute 	//specify after how many milisec, token expires
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
@@ -67,11 +78,15 @@ public class JwtTokenHelper
 	
 	
 	// Generates token for user:
-	public String generateToken(UserDetails userDetails)
+	public String generateToken(UserDetails userDetails) throws NoSuchAlgorithmException, InvalidKeyException, java.security.InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException
 	{
 		Map<String, Object> claims = new HashMap<>();
-		return doGenerateToken(claims, userDetails.getUsername()); 
+		String token =  doGenerateToken(claims, userDetails.getUsername()); 
 		
+		
+	    String encryptedToken = AESUtil.encrypt(token);
+	    
+		return encryptedToken;
 	}
 	
 	
@@ -90,6 +105,7 @@ public class JwtTokenHelper
 	// Is token valid?
 	public boolean validateToken(String token, UserDetails userDetails)
 	{
+		
 		final String username = getUsernameFromToken(token);
 		
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
@@ -98,25 +114,25 @@ public class JwtTokenHelper
 	
 	
 	// Not used in this application as Logout Controller is removed
-	public String invalidateToken(String token)
-	{
-		String invalidToken = null;
-		String userName = getUsernameFromToken(token);
-		UserDetails userDetails=userDetailsServiceImpl.loadUserByUsername(userName);;
-		
-
-		Claims claims = getAllClaimsFromToken(token);
-		
-	
-		System.out.println("Invalidating date: "+claims.getExpiration());
-		return   Jwts.builder()
-				.setClaims(claims)
-				.setSubject(userName)
-				.setExpiration(new Date(System.currentTimeMillis() + 0))
-				.setIssuedAt(new Date())
-				.signWith(SignatureAlgorithm.HS256, SECRET)
-				.compact();
-		
-
-	}
+//	public String invalidateToken(String token)
+//	{
+//		String invalidToken = null;
+//		String userName = getUsernameFromToken(token);
+//		UserDetails userDetails=userDetailsServiceImpl.loadUserByUsername(userName);;
+//		
+//
+//		Claims claims = getAllClaimsFromToken(token);
+//		
+//	
+//		System.out.println("Invalidating date: "+claims.getExpiration());
+//		return   Jwts.builder()
+//				.setClaims(claims)
+//				.setSubject(userName)
+//				.setExpiration(new Date(System.currentTimeMillis() + 0))
+//				.setIssuedAt(new Date())
+//				.signWith(SignatureAlgorithm.HS256, SECRET)
+//				.compact();
+//		
+//
+//	}
 }
