@@ -3,6 +3,9 @@ package com.crm.filter;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.crm.config.UserDetailsServiceImpl;
 import com.crm.helper.JwtTokenHelper;
+import com.crm.services.AESUtil;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -29,6 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
 {
 	String userName=null;
 	String token=null;
+	String encryptedToken = null;
+	String decryptedToken = null;
 
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
@@ -53,10 +60,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
 		else if(request != null && requestToken.startsWith("Bearer") && requestToken != null)
 		{
 			token = requestToken.substring(7); // remove "Bearer " from the request token
-			System.out.println("2. Token: "+token);
+			//*******//
+			System.out.println("TOKEN FROM REQUEST - "+token);
+		    try
+		    {
+		    	
+			    //decryptedToken  = AESUtil.encrypt(algorithm, token, key, ivParameterSpec);
+			    decryptedToken = AESUtil.decrypt(token);
+				System.out.println("DECRYPTED TOKEN = "+decryptedToken);
+		    }
+		    
+		    catch(Exception e)
+		    {
+		    	System.out.println("Exception caught while decrypting token");
+		    }
+			
+			
+			System.out.println("2. Decrypted Token: "+decryptedToken);
 			try
 			{
-				userName = this.jwtTokenHelper.getUsernameFromToken(token);
+				userName = this.jwtTokenHelper.getUsernameFromToken(decryptedToken);
 				System.out.println("Token username-> "+userName);
 				
 			}
@@ -99,9 +122,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
 			{
 				UserDetails userDetails = this.userDetailsServiceImpl.loadUserByUsername(userName);
 				
-				if(jwtTokenHelper.validateToken(token, userDetails))
+				if(jwtTokenHelper.validateToken(decryptedToken, userDetails))
 				{  
-					System.out.println("In controller printing exp::::"+jwtTokenHelper.getExpirationDateFromToken(token));
+					System.out.println("In controller printing exp::::"+jwtTokenHelper.getExpirationDateFromToken(decryptedToken));
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
 							new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
 				
